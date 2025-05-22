@@ -1,24 +1,50 @@
 pipeline {
     agent any
+    
+    environment {
+        MAVEN_OPTS = "--add-opens java.base/java.lang=ALL-UNNAMED"
+    }
 
     stages {
-        stage('Test stage 1') {
+        stage('Test') {
             steps {
-                sh 'cd SampleWebApp mvn test'
+                sh 'cd SampleWebApp && mvn test'
             }
         }
-        stage('Complie the Java Code stage 2') {
+
+        stage('Build & Compile') {
             steps {
                 sh 'cd SampleWebApp && mvn clean package'
             }
         }
-     
-        
+
+        stage('Quality Code Scan Analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh 'mvn -f SampleWebApp/pom.xml sonar:sonar'
+                }
+            }
+        }
+
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Deploy to Tomcat Web Server') {
             steps {
-               deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'passwordtomcat2', path: '', url: 'http://3.145.108.179:8080')], contextPath: 'webapp', war: '**/*.war'
+                deploy adapters: [
+                    tomcat9(
+                        credentialsId: 'passwordtomcat', 
+                        path: '', 
+                        url: 'http://18.226.214.175:8080/'
+                    )
+                ], contextPath: 'webapp', war: '**/*.war'
             }
         }
     }
-
 }
