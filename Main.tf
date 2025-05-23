@@ -22,7 +22,7 @@ resource "aws_vpc" "prodvpc" {
 resource "aws_subnet" "prodsubnet1" {
   vpc_id            = aws_vpc.prodvpc.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-2a"
+  availability_zone = "us-east-1"
   map_public_ip_on_launch = true
   
   tags = {
@@ -157,8 +157,8 @@ resource "aws_instance" "firstinstance" {
   instance_type          = "t2.large"
   vpc_security_group_ids = [aws_security_group.allow_web.id]
   subnet_id              = aws_subnet.prodsubnet1.id
-  key_name               = "wiseKP"
-  availability_zone      = "us-east-2a"
+  key_name               = "wizyKP"
+  availability_zone      = "us-east-1"
   user_data              =  "${file("install_jenkins.sh")}"
 
 
@@ -173,8 +173,8 @@ resource "aws_instance" "secondinstance" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.allow_web.id]
   subnet_id              = aws_subnet.prodsubnet1.id
-  key_name               = "wiseKP"
-  availability_zone      = "us-east-2a"
+  key_name               = "wizyKP"
+  availability_zone      = "us-east-1"
   user_data              =  "${file("install_tomcat.sh")}"
   
 
@@ -189,8 +189,8 @@ resource "aws_instance" "thirdinstance" {
   instance_type          = "t3.xlarge"
   vpc_security_group_ids = [aws_security_group.allow_web.id]
   subnet_id              = aws_subnet.prodsubnet1.id
-  key_name               = "wiseKP"
-  availability_zone      = "us-east-2a"
+  key_name               = "wizyKP"
+  availability_zone      = "us-east-1"
   user_data              =  "${file("install_sonar.sh")}"
   
 
@@ -205,8 +205,8 @@ resource "aws_instance" "fourthinstance" {
   instance_type          = "t3.xlarge"
   vpc_security_group_ids = [aws_security_group.allow_web.id]
   subnet_id              = aws_subnet.prodsubnet1.id
-  key_name               = "wiseKP"
-  availability_zone      = "us-east-2a"
+  key_name               = "wizyKP"
+  availability_zone      = "us-east-1"
   user_data              =  "${file("install_nexus.sh")}"
   
 
